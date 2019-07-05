@@ -17,11 +17,63 @@
     <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.indigo-pink.min.css">
     <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
     <link rel="icon" type="image/png" href="./assets/images/logo.png">
+    <script>
+
+        if (! window.DeviceOrientationEvent) {
+            console.log("NO ORIENTATION")
+            document.getElementById("orientation").innerText = "NO ORIENTATION EVENT"
+        }
+
+        window.addEventListener("deviceorientation", function(event){
+            var absolute = event.absolute;
+            var alpha    = event.alpha;
+            var beta     = event.beta;
+            var gamma    = event.gamma;
+
+            console.log("absolute "+ absolute + ", alpha " + alpha +", beta " + beta + ", gamma " + gamma)
+            document.getElementById("orientation").innerText = "absolute "+ absolute + ", alpha " + alpha +", beta " + beta + ", gamma " + gamma
+        }, true);
+
+
+        const socket = new WebSocket(TODO);
+
+        socket.onopen = function(e) {
+            document.getElementById("wscommand").innerText = "socket open"
+        };
+
+        socket.onmessage = function(event) {
+            document.getElementById("wscommand").innerText = event.data
+            if (event.data === "UP") {
+                window.moveForward()
+            } else if (event.data === "DOWN") {
+                window.moveBackward()
+            } else if (event.data === "LEFT") {
+                window.moveLeft()
+            } else if (event.data === "RIGHT") {
+                window.moveRight()
+            } else if (event.data === "STOP") {
+                window.stopMoving()
+            }
+            setTimeout(function() {
+                window.stopMoving()
+            }, 500) // automatically stop moving after 500millis
+        };
+
+        socket.onclose = function(event) {
+            document.getElementById("wscommand").innerText = "close"
+        };
+
+        socket.onerror = function(error) {
+            document.getElementById("wscommand").innerText = "error " + error
+        };
+
+    </script>
 </head>
 
 <body>
     <!-- Always shows a header, even in smaller screens. -->
-
+    <div id="orientation" style="position: fixed; z-index: 11111; top: 10px; left: 10px;">Orientation Unknown</div>
+    <div id="wscommand" style="position: fixed; z-index: 11111; top: 30px; left: 10px;">WS</div>
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
         <header class="mdl-layout__header">
             <div class="mdl-layout__header-row">

@@ -27,6 +27,7 @@
                         return mBot.connect();
                     })
                     .then(_ => {
+                        mBot.pro
                         // Connection is done, we show the controls
                         stepConnect.style.display = "none";
                         stepControl.style.display = "flex";
@@ -38,6 +39,22 @@
                         let btnDown = document.getElementById('btnDown');
                         let btnLeft = document.getElementById('btnLeft');
                         let btnRight = document.getElementById('btnRight');
+
+                        window.moveForward = function() {
+                            mBot.processMotor(-250, 250)
+                        }
+                        window.moveBackward = function() {
+                            mBot.processMotor(250, -250)
+                        }
+                        window.moveLeft = function() {
+                            mBot.processMotor(250, 250)
+                        }
+                        window.moveRight = function() {
+                            mBot.processMotor(-250, -250)
+                        }
+                        window.stopMoving = function() {
+                            mBot.processMotor(0,0)
+                        }
 
                         btnUp.addEventListener('touchstart', _ => { mBot.processMotor(-250, 250) });
                         btnDown.addEventListener('touchstart', _ => { mBot.processMotor(250, -250) });
